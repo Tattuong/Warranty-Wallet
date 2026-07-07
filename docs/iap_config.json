@@ -1,0 +1,28 @@
+{
+  "name": "Warranty Wallet",
+  "id": "com.warrantywalletmng.warrantywallet",
+  "version": "1.0.0",
+  "disable": 0,
+  "code": "FULL_IAP",
+  "status": "ACTIVE",
+  "msg": "Google Play billing enabled",
+  "products": {
+    "consumable": [
+      { "id": "ww_pack_1", "coins": 50, "title": "Coin Pack 1" },
+      { "id": "ww_pack_2", "coins": 100, "title": "Coin Pack 2" },
+      { "id": "ww_pack_3", "coins": 200, "title": "Coin Pack 3" },
+      { "id": "ww_pack_4", "coins": 350, "title": "Coin Pack 4" },
+      { "id": "ww_pack_5", "coins": 500, "title": "Coin Pack 5" },
+      { "id": "ww_pack_6", "coins": 750, "title": "Coin Pack 6" },
+      { "id": "ww_pack_7", "coins": 1000, "title": "Coin Pack 7" },
+      { "id": "ww_pack_8", "coins": 1500, "title": "Coin Pack 8" },
+      { "id": "ww_pack_9", "coins": 2200, "title": "Coin Pack 9" },
+      { "id": "ww_pack_10", "coins": 3000, "title": "Coin Pack 10" }
+    ],
+    "non_consumable": [
+      { "id": "ww_remove_ads", "title": "Remove Ads" }
+    ]
+  },
+  "remote_url": "https://api2.blwsmartware.net/R225.json",
+  "notes": "Set disable=1 to hide Google Play billing popup while keeping coin shop active."
+}
