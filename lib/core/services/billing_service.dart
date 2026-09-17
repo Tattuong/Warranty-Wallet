@@ -22,6 +22,7 @@ class BillingService {
   Future<void> init({
     required PurchaseCallback onPurchase,
     required VoidCallback onError,
+    required VoidCallback onCanceled,
   }) async {
     if (isInitialized) return;
 
@@ -37,14 +38,17 @@ class BillingService {
       _subscription = _iap.purchaseStream.listen(
         (purchases) async {
           for (final purchase in purchases) {
-            if (purchase.status == PurchaseStatus.pending) continue;
-
-            if (purchase.status == PurchaseStatus.error) {
-              lastError = purchase.error?.message ?? 'Purchase failed';
-              onError();
-            } else if (purchase.status == PurchaseStatus.purchased ||
-                purchase.status == PurchaseStatus.restored) {
-              onPurchase(purchase);
+            switch (purchase.status) {
+              case PurchaseStatus.pending:
+                break;
+              case PurchaseStatus.error:
+                lastError = purchase.error?.message ?? 'Purchase failed';
+                onError();
+              case PurchaseStatus.canceled:
+                onCanceled();
+              case PurchaseStatus.purchased:
+              case PurchaseStatus.restored:
+                onPurchase(purchase);
             }
 
             if (purchase.pendingCompletePurchase) {

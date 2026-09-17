@@ -18,8 +18,8 @@ class CoinNotification {
 
       AppToast.show(
         ctx,
-        title: AppStrings.t(ctx, event.messageKey, {'amount': event.amount.toString()}),
-        message: AppStrings.t(ctx, 'coinRewardSub', {'balance': balance.toString()}),
+        title: AppStrings.t(ctx, 'coinRewardTitle', {'amount': event.amount.toString()}),
+        message: '${AppStrings.t(ctx, event.messageKey, {'amount': event.amount.toString()})} · ${AppStrings.t(ctx, 'coinRewardSub', {'balance': balance.toString()})}',
         icon: Icons.stars_rounded,
         color: AppColors.warning,
       );

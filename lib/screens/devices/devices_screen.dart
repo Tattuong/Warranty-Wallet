@@ -50,6 +50,8 @@ class DevicesScreenState extends State<DevicesScreen> {
     final list = devices.filteredDevices;
     final limit = devices.deviceLimit(shop);
     final canAdd = devices.canAddDevice(shop);
+    final hasDevices = devices.totalCount > 0;
+    final isFilteredEmpty = hasDevices && list.isEmpty;
 
     return PageBackground(
       child: Scaffold(
@@ -60,149 +62,92 @@ class DevicesScreenState extends State<DevicesScreen> {
             physics: const BouncingScrollPhysics(),
             slivers: [
               SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
-                  child: VaultCard(
-                    accentColor: AppColors.accent,
-                    radius: 26,
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                AppStrings.t(context, 'devicesTitle'),
-                                style: GoogleFonts.plusJakartaSans(fontSize: 28, fontWeight: FontWeight.w800, letterSpacing: -0.8),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                limit > 0
-                                    ? '${devices.totalCount}/$limit ${AppStrings.t(context, 'navDevices').toLowerCase()}'
-                                    : '${devices.totalCount} ${AppStrings.t(context, 'navDevices').toLowerCase()}',
-                                style: GoogleFonts.plusJakartaSans(color: AppColors.onSurfaceVariant, fontSize: 12, fontWeight: FontWeight.w600),
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (devices.totalCount > 0) ...[
-                          _HeaderAddButton(
-                            tooltip: AppStrings.t(context, 'addDevice'),
-                            onPressed: () => _handleAdd(context, canAdd, limit),
-                          ),
-                          const SizedBox(width: 10),
-                        ],
-                        const CoinBalanceChip(),
-                      ],
-                    ),
-                  ),
+                child: _DevicesHeader(
+                  countLabel: limit > 0
+                      ? '${devices.totalCount}/$limit ${AppStrings.t(context, 'navDevices').toLowerCase()}'
+                      : '${devices.totalCount} ${AppStrings.t(context, 'navDevices').toLowerCase()}',
+                  showAdd: hasDevices,
+                  onAdd: () => _handleAdd(context, canAdd, limit),
                 ),
               ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
-                  child: VaultSearchField(
-                    controller: _searchCtrl,
-                    onChanged: devices.setSearchQuery,
-                    hint: AppStrings.t(context, 'search'),
-                  ),
-                ),
-              ),
-              if (shop.hasAdvancedFilters) ...[
+              if (hasDevices) ...[
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          for (final entry in [
-                            ('all', 'filterAll'),
-                            ('expired', 'filterExpired'),
-                            ('expiring', 'filterExpiring'),
-                            ('active', 'filterActive'),
-                          ])
-                            VaultFilterPill(
-                              label: AppStrings.t(context, entry.$2),
-                              selected: devices.filter == entry.$1,
-                              onTap: () {
-                                devices.setFilter(entry.$1);
-                                devices.setCategoryFilter(null);
-                              },
-                            ),
-                        ],
-                      ),
+                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                    child: VaultSearchField(
+                      controller: _searchCtrl,
+                      onChanged: devices.setSearchQuery,
+                      hint: AppStrings.t(context, 'search'),
                     ),
                   ),
                 ),
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          VaultFilterPill(
-                            label: AppStrings.t(context, 'filterAll'),
-                            selected: devices.categoryFilter == null,
-                            onTap: () => devices.setCategoryFilter(null),
-                          ),
-                          for (final cat in DeviceCategory.values)
-                            VaultFilterPill(
-                              label: AppStrings.t(context, cat.labelKey),
-                              selected: devices.categoryFilter == cat.name,
-                              leading: Text(WarrantyDevice.emojiForCategory(cat.name), style: const TextStyle(fontSize: 14)),
-                              onTap: () => devices.setCategoryFilter(cat.name),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ] else
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
-                    child: VaultCard(
-                      accentColor: AppColors.upcoming,
-                      padding: const EdgeInsets.all(14),
-                      child: Text(
-                        AppStrings.t(context, 'advancedFiltersLocked'),
-                        style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                  ),
-                ),
-              if (list.isEmpty)
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Center(
+                if (shop.hasAdvancedFilters) ...[
+                  SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: VaultCard(
-                        accentColor: AppColors.primary,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
+                      padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
                           children: [
-                            Icon(Icons.inventory_2_outlined, size: 52, color: AppColors.primary.withValues(alpha: 0.7)),
-                            const SizedBox(height: 12),
-                            Text(AppStrings.t(context, 'noResults'), style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700)),
-                            const SizedBox(height: 16),
-                            FilledButton.icon(
-                              onPressed: () => _handleAdd(context, canAdd, limit),
-                              icon: const Icon(Icons.add_rounded),
-                              label: Text(AppStrings.t(context, 'addDevice')),
-                            ),
+                            for (final entry in [
+                              ('all', 'filterAll'),
+                              ('expired', 'filterExpired'),
+                              ('expiring', 'filterExpiring'),
+                              ('active', 'filterActive'),
+                            ])
+                              VaultFilterPill(
+                                label: AppStrings.t(context, entry.$2),
+                                selected: devices.filter == entry.$1,
+                                onTap: () {
+                                  devices.setFilter(entry.$1);
+                                  devices.setCategoryFilter(null);
+                                },
+                              ),
                           ],
                         ),
                       ),
                     ),
                   ),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            VaultFilterPill(
+                              label: AppStrings.t(context, 'filterAll'),
+                              selected: devices.categoryFilter == null,
+                              onTap: () => devices.setCategoryFilter(null),
+                            ),
+                            for (final cat in DeviceCategory.values)
+                              VaultFilterPill(
+                                label: AppStrings.t(context, cat.labelKey),
+                                selected: devices.categoryFilter == cat.name,
+                                leading: Text(WarrantyDevice.emojiForCategory(cat.name), style: const TextStyle(fontSize: 14)),
+                                onTap: () => devices.setCategoryFilter(cat.name),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ] else
+                  const SliverToBoxAdapter(child: _UnlockFiltersRow()),
+              ],
+              if (list.isEmpty)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 130),
+                    child: _DevicesEmptyCard(
+                      filtered: isFilteredEmpty,
+                      onAdd: () => _handleAdd(context, canAdd, limit),
+                    ),
+                  ),
                 )
               else
                 SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 130),
                   sliver: SliverList.separated(
                     itemCount: list.length,
                     separatorBuilder: (_, __) => const SizedBox(height: 10),
@@ -260,6 +205,149 @@ class DevicesScreenState extends State<DevicesScreen> {
   }
 }
 
+class _DevicesHeader extends StatelessWidget {
+  final String countLabel;
+  final bool showAdd;
+  final VoidCallback onAdd;
+
+  const _DevicesHeader({
+    required this.countLabel,
+    required this.showAdd,
+    required this.onAdd,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  AppStrings.t(context, 'devicesTitle'),
+                  style: GoogleFonts.plusJakartaSans(fontSize: 26, fontWeight: FontWeight.w800, letterSpacing: -0.8, height: 1.1),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  countLabel,
+                  style: GoogleFonts.plusJakartaSans(color: AppColors.onSurfaceVariant, fontWeight: FontWeight.w600, fontSize: 13),
+                ),
+              ],
+            ),
+          ),
+          if (showAdd) ...[
+            _HeaderAddButton(
+              tooltip: AppStrings.t(context, 'addDevice'),
+              onPressed: onAdd,
+            ),
+            const SizedBox(width: 10),
+          ],
+          const CoinBalanceChip(),
+        ],
+      ),
+    );
+  }
+}
+
+class _UnlockFiltersRow extends StatelessWidget {
+  const _UnlockFiltersRow();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+      child: VaultCard(
+        onTap: () => MainShell.of(context)?.openShop(tab: ShopRewardsTab.features),
+        radius: 18,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        child: Row(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: AppColors.upcoming.withValues(alpha: 0.14),
+                borderRadius: BorderRadius.circular(11),
+              ),
+              child: const Icon(Icons.filter_alt_outlined, color: AppColors.upcoming, size: 18),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    AppStrings.t(context, 'advancedFiltersLocked'),
+                    style: GoogleFonts.plusJakartaSans(fontSize: 13, fontWeight: FontWeight.w800),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    AppStrings.t(context, 'advancedFiltersLockedDesc'),
+                    style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.w500, color: AppColors.onSurfaceVariant, height: 1.25),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Icon(Icons.lock_outline_rounded, size: 16, color: AppColors.onSurfaceVariant.withValues(alpha: 0.7)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DevicesEmptyCard extends StatelessWidget {
+  final bool filtered;
+  final VoidCallback onAdd;
+
+  const _DevicesEmptyCard({required this.filtered, required this.onAdd});
+
+  @override
+  Widget build(BuildContext context) {
+    return VaultCard(
+      radius: 22,
+      padding: const EdgeInsets.fromLTRB(22, 28, 22, 22),
+      child: Column(
+        children: [
+          Icon(
+            filtered ? Icons.search_off_rounded : Icons.inventory_2_outlined,
+            size: 48,
+            color: AppColors.primary.withValues(alpha: 0.55),
+          ),
+          const SizedBox(height: 14),
+          Text(
+            AppStrings.t(context, filtered ? 'noResults' : 'devicesEmptyTitle'),
+            textAlign: TextAlign.center,
+            style: GoogleFonts.plusJakartaSans(fontSize: 16, fontWeight: FontWeight.w800),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            AppStrings.t(context, filtered ? 'noResultsHint' : 'devicesEmptyHint'),
+            textAlign: TextAlign.center,
+            style: GoogleFonts.plusJakartaSans(color: AppColors.onSurfaceVariant, fontSize: 13, height: 1.4),
+          ),
+          if (!filtered) ...[
+            const SizedBox(height: 18),
+            FilledButton.icon(
+              onPressed: onAdd,
+              icon: const Icon(Icons.add_rounded, size: 20),
+              label: Text(AppStrings.t(context, 'addDevice')),
+              style: FilledButton.styleFrom(
+                minimumSize: const Size.fromHeight(46),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
 class _HeaderAddButton extends StatelessWidget {
   final String tooltip;
   final VoidCallback onPressed;
@@ -273,8 +361,6 @@ class _HeaderAddButton extends StatelessWidget {
       child: Material(
         color: AppColors.primary,
         borderRadius: BorderRadius.circular(14),
-        elevation: 0,
-        shadowColor: AppColors.primary.withValues(alpha: 0.35),
         child: InkWell(
           onTap: onPressed,
           borderRadius: BorderRadius.circular(14),

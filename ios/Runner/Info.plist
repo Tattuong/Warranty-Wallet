@@ -41,6 +41,10 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-3940256099942544~1458002511</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>This allows the app to show ads that are more relevant to you.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Warranty Wallet needs photo access to save device and invoice images.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>

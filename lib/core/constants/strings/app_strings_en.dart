@@ -13,6 +13,9 @@ const Map<String, String> appStringsEn = {
   'close': 'Close',
   'search': 'Search devices...',
   'noResults': 'No devices found',
+  'noResultsHint': 'Try a different name, serial, or filter.',
+  'devicesEmptyTitle': 'No devices yet',
+  'devicesEmptyHint': 'Add a device with purchase date and warranty expiry to start tracking.',
   'offlineNote': 'Works fully offline',
 
   // Onboarding
@@ -83,7 +86,8 @@ const Map<String, String> appStringsEn = {
   'filterExpired': 'Expired',
   'filterExpiring': 'Expiring Soon',
   'filterActive': 'Active',
-  'advancedFiltersLocked': 'Unlock Advanced Filters in Shop',
+  'advancedFiltersLocked': 'Unlock Advanced Filters',
+  'advancedFiltersLockedDesc': 'Filter by expired, expiring, active & category',
   'tags': 'Tags',
   'addTag': 'Add tag',
   'customTagsLocked': 'Unlock Custom Tags in Shop',
@@ -171,8 +175,10 @@ const Map<String, String> appStringsEn = {
   'alreadyOwned': 'Already owned',
   'dailyReward': 'Daily Reward',
   'dailyRewardClaim': 'Claim {count} coins',
-  'dailyRewardClaimed': 'Daily reward claimed!',
+  'dailyRewardClaimed': 'Daily login bonus',
   'dailyRewardDone': 'Claimed today',
+  'coinRewardTitle': '+{amount} coins',
+  'coinRewardSub': 'Balance: {balance}',
 
   // IAP / Billing
   'billingDisabled': 'Google Play purchases are temporarily unavailable',
@@ -186,10 +192,10 @@ const Map<String, String> appStringsEn = {
   'restorePurchasesDesc': 'Restore previous Google Play purchases',
   'configNetworkError': 'Could not reach server. Using cached settings.',
   'configTimeout': 'Server timeout. Using cached settings.',
-  'coinsAdded': 'Coins added to your balance!',
-  'deviceAddedReward': '+10 coins for new device',
-  'photoAddedReward': '+5 coins for adding photo',
-  'invoiceAddedReward': '+5 coins for saving invoice',
+  'coinsAdded': 'Coin pack added to your wallet',
+  'deviceAddedReward': 'Reward for adding a device',
+  'photoAddedReward': 'Reward for adding a photo',
+  'invoiceAddedReward': 'Reward for saving an invoice',
 
   // Settings
   'settingsTitle': 'Settings',

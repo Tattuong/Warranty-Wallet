@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../core/constants/app_colors.dart';
 import '../core/constants/app_strings.dart';
+import '../widgets/ad_banner_slot.dart';
 import 'devices/devices_screen.dart';
 import 'home/home_screen.dart';
 import 'settings/settings_screen.dart';
@@ -53,60 +54,66 @@ class MainShellState extends State<MainShell> {
       extendBody: true,
       backgroundColor: AppColors.backgroundOf(context),
       body: IndexedStack(index: _index, children: screens),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
-        child: SafeArea(
-          top: false,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(28),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                decoration: BoxDecoration(
-                  color: (isDark ? AppColors.darkSurface : AppColors.surface).withValues(alpha: 0.88),
-                  borderRadius: BorderRadius.circular(28),
-                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.12)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primaryDark.withValues(alpha: isDark ? 0.25 : 0.12),
-                      blurRadius: 24,
-                      offset: const Offset(0, 8),
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const AdBannerSlot(),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+            child: SafeArea(
+              top: false,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(28),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: (isDark ? AppColors.darkSurface : AppColors.surface).withValues(alpha: 0.88),
+                      borderRadius: BorderRadius.circular(28),
+                      border: Border.all(color: AppColors.primary.withValues(alpha: 0.12)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primaryDark.withValues(alpha: isDark ? 0.25 : 0.12),
+                          blurRadius: 24,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    _DockItem(
-                      icon: Icons.grid_view_rounded,
-                      label: AppStrings.t(context, 'navHome'),
-                      active: _index == 0,
-                      onTap: () => setState(() => _index = 0),
+                    child: Row(
+                      children: [
+                        _DockItem(
+                          icon: Icons.grid_view_rounded,
+                          label: AppStrings.t(context, 'navHome'),
+                          active: _index == 0,
+                          onTap: () => setState(() => _index = 0),
+                        ),
+                        _DockItem(
+                          icon: Icons.inventory_2_outlined,
+                          label: AppStrings.t(context, 'navDevices'),
+                          active: _index == 1,
+                          onTap: () => setState(() => _index = 1),
+                        ),
+                        _DockItem(
+                          icon: Icons.diamond_outlined,
+                          label: AppStrings.t(context, 'navShop'),
+                          active: _index == 2,
+                          onTap: () => setState(() => _index = 2),
+                        ),
+                        _DockItem(
+                          icon: Icons.tune_rounded,
+                          label: AppStrings.t(context, 'navSettings'),
+                          active: _index == 3,
+                          onTap: () => setState(() => _index = 3),
+                        ),
+                      ],
                     ),
-                    _DockItem(
-                      icon: Icons.inventory_2_outlined,
-                      label: AppStrings.t(context, 'navDevices'),
-                      active: _index == 1,
-                      onTap: () => setState(() => _index = 1),
-                    ),
-                    _DockItem(
-                      icon: Icons.diamond_outlined,
-                      label: AppStrings.t(context, 'navShop'),
-                      active: _index == 2,
-                      onTap: () => setState(() => _index = 2),
-                    ),
-                    _DockItem(
-                      icon: Icons.tune_rounded,
-                      label: AppStrings.t(context, 'navSettings'),
-                      active: _index == 3,
-                      onTap: () => setState(() => _index = 3),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

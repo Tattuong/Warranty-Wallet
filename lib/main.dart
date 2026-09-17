@@ -1,10 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:image_picker_android/image_picker_android.dart';
+import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
+import 'core/constants/ad_constants.dart';
 import 'core/navigation/app_navigator.dart';
+import 'core/services/ad_service.dart';
 import 'core/services/storage_service.dart';
 import 'providers/devices_provider.dart';
 import 'providers/shop_provider.dart';
@@ -14,8 +20,16 @@ import 'widgets/coin_reward_listener.dart';
 
 late final ThemeProvider appThemeProvider;
 
+void _useAndroidPhotoPicker() {
+  final impl = ImagePickerPlatform.instance;
+  if (impl is ImagePickerAndroid) {
+    impl.useAndroidPhotoPicker = true;
+  }
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  _useAndroidPhotoPicker();
   await initializeDateFormatting('en');
   await StorageService.instance.init();
 
@@ -23,6 +37,9 @@ Future<void> main() async {
   await appThemeProvider.init();
 
   runApp(const WarrantyWalletApp());
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (AdConstants.isConfigured) unawaited(AdService.init());
+  });
 }
 
 class WarrantyWalletApp extends StatelessWidget {

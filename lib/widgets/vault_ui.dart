@@ -114,7 +114,10 @@ class VaultCard extends StatelessWidget {
                 bottom: 0,
                 child: Container(width: 4, color: accentColor),
               ),
-            Padding(padding: padding, child: child),
+            Padding(
+              padding: padding.add(accentColor != null ? const EdgeInsets.only(left: 6) : EdgeInsets.zero),
+              child: child,
+            ),
           ],
         ),
       ),
@@ -322,8 +325,10 @@ class VaultSearchField extends StatelessWidget {
           hintText: hint,
           hintStyle: GoogleFonts.plusJakartaSans(color: AppColors.onSurfaceVariant, fontWeight: FontWeight.w500),
           prefixIcon: Icon(Icons.search_rounded, color: AppColors.primary.withValues(alpha: 0.7)),
+          prefixIconConstraints: const BoxConstraints(minWidth: 48, minHeight: 48),
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          isDense: true,
+          contentPadding: const EdgeInsets.fromLTRB(4, 14, 16, 14),
         ),
       ),
     );

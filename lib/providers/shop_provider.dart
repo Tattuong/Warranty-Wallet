@@ -84,7 +84,12 @@ class ShopProvider extends ChangeNotifier {
     if (!isBillingDisabled && (Platform.isAndroid || Platform.isIOS)) {
       await _billing.init(
         onPurchase: _handlePurchase,
-        onError: () => notifyListeners(),
+        onError: () {
+          _isPurchasing = false;
+          _lastMessage = 'purchaseFailed';
+          notifyListeners();
+        },
+        onCanceled: endPurchaseUi,
       );
     }
 
@@ -285,6 +290,12 @@ class ShopProvider extends ChangeNotifier {
 
   void clearLastMessage() => _lastMessage = null;
   void clearCoinEvent() => _lastCoinEvent = null;
+
+  void endPurchaseUi() {
+    if (!_isPurchasing) return;
+    _isPurchasing = false;
+    notifyListeners();
+  }
 
   void _emitCoinEarned(int amount, String messageKey) {
     if (amount <= 0) return;

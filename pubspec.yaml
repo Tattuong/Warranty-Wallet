@@ -3,7 +3,7 @@ description: Warranty Wallet - Manage warranties, invoices, receipts & expiry da
 
 publish_to: "none"
 
-version: 1.0.1+2
+version: 1.0.2+4
 
 environment:
   sdk: ">=3.4.3 <4.0.0"
@@ -22,9 +22,12 @@ dependencies:
   uuid: ^4.1.0
   package_info_plus: ^8.3.0
   in_app_purchase: ^3.2.1
+  google_mobile_ads: ^5.3.1
   http: ^1.2.2
   share_plus: ^10.1.4
   image_picker: ^1.1.2
+  image_picker_android: ^0.8.13+19
+  image_picker_platform_interface: ^2.11.1
   path_provider: ^2.1.5
   path: ^1.9.1
 

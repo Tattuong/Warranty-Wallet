@@ -10,6 +10,7 @@ import '../../providers/theme_provider.dart';
 import '../../widgets/app_toast.dart';
 import '../../widgets/coin_balance_chip.dart';
 import '../../widgets/coin_purchase_sheet.dart';
+import '../../widgets/page_background.dart';
 import '../main_shell.dart';
 import '../privacy_policy_screen.dart';
 import '../shop/shop_screen.dart';
@@ -40,11 +41,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final shop = context.watch<ShopProvider>();
     final theme = context.watch<ThemeProvider>();
     final devices = context.watch<DevicesProvider>();
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      backgroundColor: isDark ? AppColors.darkBackground : AppColors.background,
-      appBar: AppBar(
+    return PageBackground(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
         title: Text(AppStrings.t(context, 'settingsTitle')),
         actions: [
           Padding(
@@ -192,6 +193,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           const SizedBox(height: 24),
         ],
+      ),
       ),
     );
   }
