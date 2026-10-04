@@ -75,7 +75,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           const SizedBox(height: 8),
           ListTile(
-            leading: const Icon(Icons.restart_alt_outlined, color: AppColors.primary),
+            leading: Icon(Icons.restart_alt_outlined, color: AppColors.primary),
             title: Text(AppStrings.t(context, 'resetToDefault')),
             subtitle: const Text('Theme, background & card skin'),
             onTap: () async {
@@ -152,7 +152,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           if (!shop.isBillingDisabled && shop.billing.isAvailable)
             ListTile(
-              leading: const Icon(Icons.restore_rounded, color: AppColors.primary),
+              leading: Icon(Icons.restore_rounded, color: AppColors.primary),
               title: Text(AppStrings.t(context, 'restorePurchases')),
               subtitle: Text(AppStrings.t(context, 'restorePurchasesDesc')),
               trailing: shop.isPurchasing

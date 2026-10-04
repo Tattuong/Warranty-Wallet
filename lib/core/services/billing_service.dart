@@ -5,7 +5,7 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 
 import '../constants/iap_constants.dart';
 
-typedef PurchaseCallback = void Function(PurchaseDetails purchase);
+typedef PurchaseCallback = Future<void> Function(PurchaseDetails purchase);
 
 class BillingService {
   final InAppPurchase _iap = InAppPurchase.instance;
@@ -38,21 +38,30 @@ class BillingService {
       _subscription = _iap.purchaseStream.listen(
         (purchases) async {
           for (final purchase in purchases) {
-            switch (purchase.status) {
-              case PurchaseStatus.pending:
-                break;
-              case PurchaseStatus.error:
+            if (purchase.status == PurchaseStatus.pending) continue;
+
+            try {
+              if (purchase.status == PurchaseStatus.purchased ||
+                  purchase.status == PurchaseStatus.restored) {
+                await onPurchase(purchase);
+              } else if (purchase.status == PurchaseStatus.canceled) {
+                onCanceled();
+              } else if (purchase.status == PurchaseStatus.error) {
                 lastError = purchase.error?.message ?? 'Purchase failed';
                 onError();
-              case PurchaseStatus.canceled:
-                onCanceled();
-              case PurchaseStatus.purchased:
-              case PurchaseStatus.restored:
-                onPurchase(purchase);
+              }
+            } catch (e) {
+              lastError = e.toString();
+              debugPrint('Purchase handler failed: $e');
+              onError();
             }
 
-            if (purchase.pendingCompletePurchase) {
-              await _iap.completePurchase(purchase);
+            if (purchase.pendingCompletePurchase && !_skipComplete(purchase)) {
+              try {
+                await _iap.completePurchase(purchase);
+              } catch (e) {
+                debugPrint('completePurchase failed: $e');
+              }
             }
           }
         },
@@ -74,7 +83,8 @@ class BillingService {
   Future<void> loadProducts() async {
     if (!isAvailable) return;
 
-    final response = await _iap.queryProductDetails(IapConstants.allProductIds.toSet());
+    final response =
+        await _iap.queryProductDetails(IapConstants.allProductIds.toSet());
     if (response.notFoundIDs.isNotEmpty) {
       debugPrint('Products not found: ${response.notFoundIDs}');
     }
@@ -87,20 +97,40 @@ class BillingService {
         .toList()
       ..sort((a, b) => a.rawPrice.compareTo(b.rawPrice));
 
-    final adsProducts = response.productDetails.where((p) => p.id == IapConstants.removeAdsId);
+    final adsProducts =
+        response.productDetails.where((p) => p.id == IapConstants.removeAdsId);
     removeAdsProduct = adsProducts.isEmpty ? null : adsProducts.first;
+  }
+
+  /// Play cancel updates with an empty purchase id throw from completePurchase.
+  bool _skipComplete(PurchaseDetails purchase) {
+    if (purchase.status != PurchaseStatus.canceled) return false;
+    final id = purchase.purchaseID;
+    return id == null || id.isEmpty;
   }
 
   Future<bool> buyCoinPack(ProductDetails product) async {
     if (!isAvailable) return false;
-    final param = PurchaseParam(productDetails: product);
-    return _iap.buyConsumable(purchaseParam: param);
+    try {
+      final param = PurchaseParam(productDetails: product);
+      return await _iap.buyConsumable(purchaseParam: param);
+    } catch (e) {
+      lastError = e.toString();
+      debugPrint('buyCoinPack failed: $e');
+      return false;
+    }
   }
 
   Future<bool> buyRemoveAds() async {
     if (!isAvailable || removeAdsProduct == null) return false;
-    final param = PurchaseParam(productDetails: removeAdsProduct!);
-    return _iap.buyNonConsumable(purchaseParam: param);
+    try {
+      final param = PurchaseParam(productDetails: removeAdsProduct!);
+      return await _iap.buyNonConsumable(purchaseParam: param);
+    } catch (e) {
+      lastError = e.toString();
+      debugPrint('buyRemoveAds failed: $e');
+      return false;
+    }
   }
 
   Future<void> restorePurchases() async {

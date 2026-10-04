@@ -42,7 +42,7 @@ class CoinBalanceChip extends StatelessWidget {
                   color: AppColors.coin.withValues(alpha: 0.25),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.monetization_on_rounded, color: AppColors.primaryDark, size: 14),
+                child: Icon(Icons.monetization_on_rounded, color: AppColors.primaryDark, size: 14),
               ),
               const SizedBox(width: 6),
               Text(

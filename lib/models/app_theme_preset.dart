@@ -118,14 +118,22 @@ class AppThemePresets {
 
   static const AppThemePreset defaultPreset = AppThemePreset(
     id: 'theme_default',
-    primary: AppColors.primary,
-    primaryLight: AppColors.primaryLight,
-    background: AppColors.background,
-    surface: AppColors.surface,
-    darkBackground: AppColors.darkBackground,
-    darkSurface: AppColors.darkSurface,
-    headerGradient: AppColors.headerGradient,
-    balanceGradient: AppColors.heroGradient,
+    primary: AppColors.copper,
+    primaryLight: AppColors.copperLight,
+    background: Color(0xFFFFF8F0),
+    surface: Color(0xFFFFFFFF),
+    darkBackground: Color(0xFF14110F),
+    darkSurface: Color(0xFF1F1A17),
+    headerGradient: LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [AppColors.copperDark, AppColors.copper, AppColors.copperLight],
+    ),
+    balanceGradient: LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [AppColors.copper, Color(0xFF2DD4BF)],
+    ),
   );
 
   static const AppThemePreset sunset = AppThemePreset(
@@ -195,7 +203,11 @@ class DeviceBackground {
 
   static const DeviceBackground defaultBg = DeviceBackground(
     id: 'bg_default',
-    gradient: AppColors.heroGradient,
+    gradient: LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [AppColors.copper, Color(0xFF2DD4BF)],
+    ),
   );
 
   static const DeviceBackground sunrise = DeviceBackground(

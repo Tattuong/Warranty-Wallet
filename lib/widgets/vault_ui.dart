@@ -18,8 +18,9 @@ class VaultMeshBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     final shop = context.watch<ShopProvider>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final base = isDark ? shop.activeTheme.darkBackground : shop.activeTheme.background;
-    final accent = shop.activeBackground.gradient.colors.first;
+    final theme = shop.activeTheme;
+    final base = isDark ? theme.darkBackground : theme.background;
+    final accent = theme.primary;
 
     return Stack(
       children: [
@@ -33,12 +34,12 @@ class VaultMeshBackground extends StatelessWidget {
           Positioned(
             top: 120,
             left: -90,
-            child: _Orb(color: AppColors.accent.withValues(alpha: isDark ? 0.12 : 0.10), size: 200),
+            child: _Orb(color: theme.primaryLight.withValues(alpha: isDark ? 0.16 : 0.14), size: 200),
           ),
           Positioned(
             bottom: 80,
             right: -40,
-            child: _Orb(color: AppColors.accentAlt.withValues(alpha: isDark ? 0.08 : 0.07), size: 180),
+            child: _Orb(color: theme.headerGradient.colors.last.withValues(alpha: isDark ? 0.12 : 0.10), size: 180),
           ),
         ],
         child,

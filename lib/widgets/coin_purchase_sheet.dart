@@ -22,6 +22,8 @@ class CoinPurchaseSheet {
       return;
     }
 
+    shop.releasePurchaseUi();
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     await showModalBottomSheet<void>(
@@ -33,10 +35,16 @@ class CoinPurchaseSheet {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
-      builder: (_) => const _CoinPurchaseSheet(),
+      builder: (ctx) {
+        final maxHeight = MediaQuery.sizeOf(ctx).height * 0.72;
+        return ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: maxHeight),
+          child: const _CoinPurchaseSheet(),
+        );
+      },
     );
 
-    shop.endPurchaseUi();
+    shop.releasePurchaseUi();
   }
 }
 
@@ -47,7 +55,6 @@ class _CoinPurchaseSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final shop = context.watch<ShopProvider>();
     final products = shop.billing.products;
-    final listMaxHeight = MediaQuery.sizeOf(context).height * 0.42;
     final bottom = MediaQuery.viewPaddingOf(context).bottom;
 
     return Padding(
@@ -61,7 +68,8 @@ class _CoinPurchaseSheet extends StatelessWidget {
               Expanded(
                 child: Text(
                   AppStrings.t(context, 'buyCoins'),
-                  style: GoogleFonts.plusJakartaSans(fontSize: 20, fontWeight: FontWeight.w800),
+                  style: GoogleFonts.plusJakartaSans(
+                      fontSize: 20, fontWeight: FontWeight.w800),
                 ),
               ),
               IconButton(
@@ -72,15 +80,18 @@ class _CoinPurchaseSheet extends StatelessWidget {
           ),
           Text(
             AppStrings.t(context, 'buyCoinsDesc'),
-            style: GoogleFonts.plusJakartaSans(color: AppColors.onSurfaceVariant, fontSize: 13),
+            style: GoogleFonts.plusJakartaSans(
+                color: AppColors.onSurfaceVariant, fontSize: 13),
           ),
           const SizedBox(height: 10),
           Row(
             children: [
-              const Icon(Icons.monetization_on_rounded, color: AppColors.warning, size: 20),
+              const Icon(Icons.monetization_on_rounded,
+                  color: AppColors.warning, size: 20),
               const SizedBox(width: 6),
               Text(
-                AppStrings.t(context, 'yourCoins', {'count': shop.coins.toString()}),
+                AppStrings.t(
+                    context, 'yourCoins', {'count': shop.coins.toString()}),
                 style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700),
               ),
             ],
@@ -96,7 +107,8 @@ class _CoinPurchaseSheet extends StatelessWidget {
           ],
           if (shop.isPurchasing) ...[
             const SizedBox(height: 12),
-            _ProcessingBanner(text: AppStrings.t(context, 'processingPurchase')),
+            _ProcessingBanner(
+                text: AppStrings.t(context, 'processingPurchase')),
           ],
           if (!shop.billing.isAvailable) ...[
             const SizedBox(height: 16),
@@ -114,10 +126,8 @@ class _CoinPurchaseSheet extends StatelessWidget {
             ),
           ] else ...[
             const SizedBox(height: 14),
-            ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: listMaxHeight),
+            Flexible(
               child: ListView.separated(
-                shrinkWrap: true,
                 itemCount: products.length,
                 separatorBuilder: (_, __) => const SizedBox(height: 8),
                 itemBuilder: (ctx, i) => _PackTile(product: products[i]),
@@ -128,7 +138,8 @@ class _CoinPurchaseSheet extends StatelessWidget {
           Text(
             AppStrings.t(context, 'earnCoinsHint'),
             textAlign: TextAlign.center,
-            style: GoogleFonts.plusJakartaSans(color: AppColors.onSurfaceVariant, fontSize: 11),
+            style: GoogleFonts.plusJakartaSans(
+                color: AppColors.onSurfaceVariant, fontSize: 11),
           ),
         ],
       ),
@@ -160,7 +171,8 @@ class _ProcessingBanner extends StatelessWidget {
           Expanded(
             child: Text(
               text,
-              style: GoogleFonts.plusJakartaSans(color: AppColors.onSurfaceVariant, fontSize: 13),
+              style: GoogleFonts.plusJakartaSans(
+                  color: AppColors.onSurfaceVariant, fontSize: 13),
             ),
           ),
         ],
@@ -200,7 +212,8 @@ class _PackTile extends StatelessWidget {
                     color: AppColors.warning.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(Icons.star_rounded, color: AppColors.warning),
+                  child:
+                      const Icon(Icons.star_rounded, color: AppColors.warning),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
@@ -208,12 +221,16 @@ class _PackTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        AppStrings.t(context, 'coinPack', {'num': packNum.toString()}),
-                        style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700, fontSize: 15),
+                        AppStrings.t(
+                            context, 'coinPack', {'num': packNum.toString()}),
+                        style: GoogleFonts.plusJakartaSans(
+                            fontWeight: FontWeight.w700, fontSize: 15),
                       ),
                       Text(
-                        AppStrings.t(context, 'coinAmount', {'count': coins.toString()}),
-                        style: GoogleFonts.plusJakartaSans(color: AppColors.onSurfaceVariant, fontSize: 12),
+                        AppStrings.t(
+                            context, 'coinAmount', {'count': coins.toString()}),
+                        style: GoogleFonts.plusJakartaSans(
+                            color: AppColors.onSurfaceVariant, fontSize: 12),
                       ),
                     ],
                   ),
@@ -246,7 +263,8 @@ class _StatusBanner extends StatelessWidget {
   final String text;
   final Color color;
 
-  const _StatusBanner({required this.icon, required this.text, required this.color});
+  const _StatusBanner(
+      {required this.icon, required this.text, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -260,7 +278,8 @@ class _StatusBanner extends StatelessWidget {
         children: [
           Icon(icon, color: color, size: 20),
           const SizedBox(width: 10),
-          Expanded(child: Text(text, style: TextStyle(color: color, fontSize: 13))),
+          Expanded(
+              child: Text(text, style: TextStyle(color: color, fontSize: 13))),
         ],
       ),
     );

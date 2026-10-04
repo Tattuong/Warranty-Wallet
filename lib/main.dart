@@ -9,6 +9,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
 import 'core/constants/ad_constants.dart';
+import 'core/constants/app_colors.dart';
 import 'core/navigation/app_navigator.dart';
 import 'core/services/ad_service.dart';
 import 'core/services/storage_service.dart';
@@ -57,6 +58,16 @@ class WarrantyWalletApp extends StatelessWidget {
         builder: (context, theme, shop, _) {
           final preset = shop.activeTheme;
           final isDark = theme.isDarkMode;
+          AppColors.bind(
+            primary: preset.primary,
+            primaryLight: preset.primaryLight,
+            background: preset.background,
+            surface: preset.surface,
+            darkBackground: preset.darkBackground,
+            darkSurface: preset.darkSurface,
+            headerGradient: preset.headerGradient,
+            heroGradient: preset.balanceGradient,
+          );
 
           SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
